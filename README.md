@@ -4,7 +4,7 @@ A module for capturing and querying arbitrary events, called metrics.
 
 A metric has a `name`, like 'pageViews', and arbitrary `data`, which can be any object.  For example, your 'pageViews' metric might have an entry like:
 
-```json
+```javascript
 {
   name: 'pageViews',
   data: {
