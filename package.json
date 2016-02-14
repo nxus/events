@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/nxus/metrics",
   "dependencies": {
-    "babel-runtime": "^5.7.0"
+    "babel-runtime": "^5.7.0",
+    "bluebird": "^3.3.1"
   },
   "peerDependencies": {
     "@nxus/core": "^2.3.0",

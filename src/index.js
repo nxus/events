@@ -18,7 +18,23 @@ export default class Metrics {
 
     app.get('storage').model(MetricModel)
 
-    this.respond('metric')
+    this.gather('capture')
+    .respond('metric')
+    .respond('getMetrics')
+  }
+
+  /**
+   * Captures metric data about a specified @nxus/storage Model
+   * @param  {string} model      The name of the model to capture. Must be a Storage/BaseModel class.
+   * @param  {Array}  events     Optional. An array of model events to capture. Defaults to 'create', 'update', 'destroy'.
+   */
+  capture(model, events=['create', 'update', 'destroy']) {
+    events.forEach((event) => {
+      this.app.log.debug('Capturing', 'model.'+event+'.'+model)
+      this.app.get('storage').on('model.'+event+'.'+model, (record) => {
+        this.metric(model+this._tensify(event), record);
+      })
+    })
   }
 
   /**
@@ -29,6 +45,7 @@ export default class Metrics {
    */
   metric(name, data) {
     return this.app.get('storage').getModel('metric').then((Metric) => {
+      this.app.log.debug('Creating metric', {name, data})
       return Metric.create({name, data})
     })
   }
@@ -44,5 +61,11 @@ export default class Metrics {
     return this.app.get('storage').getModel('metric').then((Metric) => {
       return Metric.find().where(query)
     })
+  }
+
+  _tensify(s) {
+    if(s == 'create') return 'Created'
+    if(s == 'update') return 'Updated'
+    if(s == 'destroy') return 'Destroyed'
   }
 } 
